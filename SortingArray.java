@@ -3,56 +3,37 @@
 // Current sorting implementation ideas: bubble sort, selection sort, merge sort, quick sort, gnome sort
 /////////////////////////////////////////
 
-import java.util.Scanner;
-import java.util.Arrays;
 import java.lang.Math;
+
 
 public class SortingArray
 {
-    private int elementCount;
-    private int[] elements;
+    private int elementCount; //Number of elements in the array
+    private int[] elements; //Specific elements of the array
 
     public static void main(String args[])
     {
-        SortingArray curArray = new SortingArray();
+        SortingArray curArray = new SortingArray(); //Create the array object that will be used throughout the program
+        SortingMethod sorter = new SortingMethod(); //Create the sorter and initialize all sorting methods
 
-        curArray.setAttributes();
+        sorter.setCurArray(curArray); //After initializing the sorter above, set its current array to curArray, the array used throughout the program
 
-        System.out.println("Your current array length is: " + curArray.elementCount);
-        System.out.println(Arrays.toString(curArray.elements));
-
-        curArray.chooseSortingMethod();
+        new gui(curArray,sorter); //Generate the GUI
     }
 
-    public void setAttributes()
+    public void generateValues()
     {
-        Scanner input = new Scanner(System.in);
-
-        System.out.print("How many elements should be in the array? ");
-        setElementCount(input.nextInt());
         elements = new int[elementCount];
-        input.close();
 
         for (int i = 0; i < elementCount; i++)
         {
-            elements[i] = (int) (Math.random()*(100-0) + 0);
+            elements[i] = (int) (Math.random()*(500-1) + 1);
         }
-    }
-
-    public void chooseSortingMethod()
-    {
-        Scanner input = new Scanner(System.in);
-        //System.out.println("Which sorting method would you like to use?");
-        System.out.println("Automatically starting the bubble sort...");
-        Bubble sorter = new Bubble();
-        System.out.println(Arrays.toString(sorter.sort(elements)));
-        sorter.oNotation(elements);
-        input.close();
     }
 
         
     
-    /////////////////// Boring setters and getters
+    /////////////////// Setters and getters
     public void setElementCount(int newElementCount)
     {
         elementCount = newElementCount;
@@ -61,5 +42,15 @@ public class SortingArray
     public int getElementCount()
     {
         return elementCount;
+    }
+
+    public int[] getElements()
+    {
+        return elements;
+    }
+
+    public void setElements(int[] elements)
+    {
+        this.elements = elements;
     }
 }

@@ -1,128 +1,69 @@
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.scene.Node;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
+import javafx.scene.text.*;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Arrays;
 
-public class gui implements ActionListener
+public class gui extends Application
 {
-    GridBagConstraints c = new GridBagConstraints(); //Creating the object that will be used to set the attributes of the variuous GUI components
+    SortingArray inputArray = new SortingArray();
+    SortingMethod sorter = new SortingMethod(inputArray);
 
-    public gui(SortingArray inputArray, SortingMethod sorter)
+
+    @Override
+    public void start(Stage primaryStage)
     {
+        BorderPane rootPane = new BorderPane();
+        Scene scene = new Scene(rootPane,720,480);
 
-        JFrame window = new JFrame("Sorting Algorithm Visualizer"); //Creating the window frame
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel containerPanel = new JPanel(); //Container panel that will contain the other panels for the window
-        BoxLayout b1 = new BoxLayout(containerPanel,BoxLayout.Y_AXIS);
-        containerPanel.setLayout(b1);
-        window.setContentPane(containerPanel);
+        InputPanel inputPanel = new InputPanel(scene,this.inputArray,this.sorter);
+        MainPanel mainPanel = new MainPanel(scene,this.inputArray);
+        this.sorter.setMainPanel(mainPanel);
+        OutputPanel outputPanel = new OutputPanel(scene,this.sorter);
+        this.sorter.setOutputPanel(outputPanel);
+        rootPane.setTop(inputPanel);
+        rootPane.setCenter(mainPanel);
+        rootPane.setBottom(outputPanel);
+        rootPane.setRight(new Pane());
 
-        //Any panels in the window shoudl get added to containerPanel here.
-        containerPanel.add(createInputPanel(inputArray,sorter)); 
-        containerPanel.add(createMainPanel());
-        containerPanel.add(createOutputPanel());
-        
-
-        window.setSize(720,480);
-        window.setVisible(true);
-    }
-
-    public JPanel createInputPanel(SortingArray inputArray, SortingMethod sorter)
-    {
-
-        JPanel inputPanel = new JPanel(new GridBagLayout()); //The panel that will contain the input components
-
-        JLabel arraySizeText = new JLabel("Array Size (9999 maximum):");
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1;
-        c.weighty = 1;
-        inputPanel.add(arraySizeText, c);
-
-        JTextField arraySizeInput = new JTextField(4);
-        c.gridx = 1;
-        c.gridy = 0;
-        c.insets = new Insets(0,5,0,0);
-        inputPanel.add(arraySizeInput,c);
-
-        JButton generateButton = new JButton("Generate");
-        c.gridx = 2;
-        c.gridy = 0;
-        generateButton.addActionListener(new ActionListener()
+        inputPanel.getChildren().get(2).setOnMouseClicked(e ->
         {
-            public void actionPerformed(ActionEvent e)
+            if ((this.sorter.getSortingThread() == null || this.sorter.getSortingThread().isAlive() == false))
             {
-                inputArray.setElementCount(Integer.parseInt(arraySizeInput.getText()));
-                inputArray.generateValues();
+                outputPanel.updateONotation();
+                mainPanel.generateGraph(scene,inputArray);
             }
         });
-        inputPanel.add(generateButton,c);
 
-
-
-        String[] methodList =  new String[2];
-        methodList[0] = "Bubble Sort";
-        methodList[1] = "Reverse Bubble Sort";
-
-        JComboBox sortingOptions = new JComboBox(methodList);
-        c.anchor = GridBagConstraints.NORTHEAST;
-        sortingOptions.setSelectedIndex(0);
-        c.gridx = 3;
-        c.gridy = 0;
-        inputPanel.add(sortingOptions,c);
-
-        JButton sortButton = new JButton("Sort");
-        c.anchor = GridBagConstraints.FIRST_LINE_END;
-        c.gridx = 4;
-        c.gridy = 0;
-        sortButton.addActionListener(new ActionListener()
+        inputPanel.getChildren().get(4).setOnMouseClicked(e ->
         {
-            public void actionPerformed(ActionEvent e)
+            if ((this.sorter.getSortingThread() == null || this.sorter.getSortingThread().isAlive() == false))
             {
-                sorter.selectMethod(sortingOptions.getSelectedIndex(), sorter);
+                outputPanel.updateONotation();
             }
         });
-        inputPanel.add(sortButton,c);
 
-        return inputPanel;
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Array Sorting Visualizer");
+		primaryStage.show();
     }
 
-    public JPanel createOutputPanel()
+    public static void main(String args[])
     {
-        JPanel outputPanel = new JPanel(new GridBagLayout()); //The panel that will include some stats about the last algorithm run
-        outputPanel.setMaximumSize(new Dimension(720,100));
-        outputPanel.setPreferredSize(new Dimension(720,100));
-        
-        JButton test = new JButton("output panel");
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.fill = GridBagConstraints.BOTH;
-        outputPanel.add(test, c);
-
-        return outputPanel;
+        launch(args);
     }
-
-    public JPanel createMainPanel()
-    {
-        JPanel mainPanel = new JPanel(new GridBagLayout()); //The panel that will contain the main "visualizer" portion of the GUI
-        mainPanel.setPreferredSize(new Dimension(400,400));
-        mainPanel.setMaximumSize(new Dimension(400,400));
-
-        JButton test = new JButton("main panel");
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.fill = GridBagConstraints.BOTH;
-        mainPanel.add(test, c);
-
-        return mainPanel;
-    }
-
 }

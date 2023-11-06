@@ -15,16 +15,19 @@ public class SortingMethod {
     };
     private MainPanel mainPanel;
     private OutputPanel outputPanel;
-    private Thread sortingThread; //Used so thread.sleep() later on doesn't freeze main program thread
+    // all sorting occurs in separate thread to increase responsiveness
+    private Thread sortingThread;
 
 
 
-    public SortingMethod(SortingArray inputArray) { //Initializing all sorting methods when the program is first launched
-        //When the sorter is first initialized, its associated array is set to a blank 'initialization array' as seen here
-        //That way, there is essentially no performance hit from the below map being constructed
-        //Immediately after this constructor is completed, the initialization array will be replaced with the actual input array used throughout the program
-        int[] initializationArray = new int[0];
-        this.curArray.setElements(initializationArray);
+    public SortingMethod(SortingArray inputArray) {
+        /*
+            Initializing all sorting methods when the program is first launched.
+            When the sorter is first initialized, its associated array is set to a blank 'initialization array' as seen here.
+            That way, there is essentially no performance hit from the below map being constructed.
+            Immediately after this constructor is completed, the initialization array will be replaced with the actual input array used throughout the program.
+        */
+        this.curArray.setElements(new int[0]);
 
         this.sortingMethodRunnables.put(0,() -> bubble(this.curArray.getElements()));
         this.sortingMethodRunnables.put(1,() -> reverseBubble(this.curArray.getElements()));
@@ -32,12 +35,12 @@ public class SortingMethod {
         this.setCurArray(inputArray);
     }
 
-    public void executeMethod(int selectedMethod, SortingMethod sorter) {
+    public void executeMethod(int methodIndex, SortingMethod sorter) {
          /*
             The dropdown list in the GUI and the sortingMethods list have the same order,
             thus its possible to use the index of the selected dropdown item to point to the correct sorting method
          */
-        sorter.sortingMethodRunnables.get(selectedMethod).run();
+        sorter.sortingMethodRunnables.get(methodIndex).run();
     }
 
     public double oNotation(int[] inputArray) {
@@ -55,21 +58,15 @@ public class SortingMethod {
             while (notSortedCheck != newArray.length) {
                 notSortedCheck = 0;
                 for (int i = 0; i < newArray.length; i++) {
-                    //Needed for the run() methods... seems inefficient, maybe better solution available(?)
-                    MainPanel tempMainPanel = this.mainPanel;
-                    int index = i;
+                    int ndx = i;
 
                     //All GUI updates occur within a Platform.runlater() so that the javafx application thread is used (IllegalStateException thrown otherwise)
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            tempMainPanel.updateGraphColor(index,index+1);
-                        }
+                    Platform.runLater(() -> {
+                        this.mainPanel.updateGraphColor(ndx, ndx+1);
                     });
 
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(10000);
                     }
                     catch (InterruptedException e) {
                         e.printStackTrace();
@@ -81,26 +78,18 @@ public class SortingMethod {
                         newArray[i] = inputArray[i + 1];
                         newArray[i + 1] = temp;
                         this.curArray.setElements(newArray);
-                        
-                        Platform.runLater(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                tempMainPanel.updateGraphOrder(newArray, index, index+1);
-                            }
-                        });
                     }
                     else {
                         notSortedCheck++;
                     }   
 
-                    this.mainPanel.updateGraphColor(i,i+1);
+                    Platform.runLater(() -> {
+                        this.mainPanel.updateGraphColor(ndx, ndx+1);
+                    });
                     this.step++;
                 }
             }
             outputPanel.updateONotation(this.oNotation(newArray));
-            //System.out.println(Arrays.toString(newArray));
         });
         this.sortingThread.start();
     }
@@ -115,17 +104,11 @@ public class SortingMethod {
             while (notSortedCheck != newArray.length) {
                 notSortedCheck = 0;
                 for (int i = 0; i < newArray.length; i++) {
-                    //Needed for the run() methods... seems inefficient, maybe better solution available(?)
-                    MainPanel tempMainPanel = this.mainPanel;
-                    int index = i;
+                    int ndx = i;
 
                     //All GUI updates occur within a Platform.runlater() so that the javafx application thread is used (IllegalStateException thrown otherwise)
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            tempMainPanel.updateGraphColor(index,index+1);
-                        }
+                    Platform.runLater(() -> {
+                        this.mainPanel.updateGraphColor(ndx, ndx+1);
                     });
 
                     try {
@@ -139,20 +122,14 @@ public class SortingMethod {
                         int temp = inputArray[i];
                         newArray[i] = inputArray[i + 1];
                         newArray[i + 1] = temp;
-
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run()
-                            {
-                                tempMainPanel.updateGraphOrder(newArray, index, index+1);
-                            }
-                        });
                     }
                     else {
                         notSortedCheck++;
                     }
 
-                    this.mainPanel.updateGraphColor(i,i+1);
+                    Platform.runLater(() -> {
+                        this.mainPanel.updateGraphColor(ndx, ndx+1);
+                    });
                     this.step++;
                 }
             }
@@ -164,30 +141,7 @@ public class SortingMethod {
         System.out.println(Arrays.toString(newArray));
     }
 
-    /*
-    public void selection(int[] inputArray)
-    {
-        this.step = 0;
-        int[] sortedArray = inputArray;
-        int[] unsortedArray = inputArray;
-
-        
-        this.sortingThread = new Thread(() ->
-        {
-            int startPos = 0;
-            while (startPos != inputArray.length)
-            {
-                for (int i = startPos; i < inputArray.length; i++)
-                {
-
-                }
-            }
-        });
-        sortingThread.start();
-    }
-    */
-
-    /////////////////// Setters and getters ///////////////////
+    /* setters & getters */
 
     public void setCurArray(SortingArray curArray) {
         this.curArray = curArray;

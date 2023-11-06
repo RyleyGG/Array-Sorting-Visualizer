@@ -88,7 +88,6 @@ public class MainPanel extends HBox {
                     rect.widthProperty().bind(Bindings.createDoubleBinding(
                         () -> ((scene.widthProperty().getValue()-scene.widthProperty().getValue()*0.2)/inputArray.length),this.scene.widthProperty())
                     );
-                    //System.out.println(rect.widthProperty());
                     
                     rect.heightProperty().bind(Bindings.createDoubleBinding(
                         () -> (scene.heightProperty().getValue()*0.8) * ((double) curValue/(double) largestNumTemp),this.scene.heightProperty())

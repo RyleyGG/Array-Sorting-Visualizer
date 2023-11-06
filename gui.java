@@ -1,32 +1,17 @@
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.scene.Node;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ComboBox;
-import javafx.scene.text.*;
 
 
-public class gui extends Application
-{
+public class gui extends Application {
     SortingArray inputArray = new SortingArray();
     SortingMethod sorter = new SortingMethod(inputArray);
 
 
     @Override
-    public void start(Stage primaryStage)
-    {
+    public void start(Stage primaryStage) {
         BorderPane rootPane = new BorderPane();
         Scene scene = new Scene(rootPane,720,480);
 
@@ -40,17 +25,14 @@ public class gui extends Application
         rootPane.setBottom(outputPanel);
         rootPane.setRight(new Pane());
 
-        inputPanel.getChildren().get(2).setOnMouseClicked(e ->
-        {
-            if ((this.sorter.getSortingThread() == null || this.sorter.getSortingThread().isAlive() == false))
-            {
+        inputPanel.getChildren().get(2).setOnMouseClicked(e -> {
+            if ((this.sorter.getSortingThread() == null || this.sorter.getSortingThread().isAlive() == false)) {
                 outputPanel.updateONotation();
                 mainPanel.generateGraph(scene,inputArray);
             }
         });
 
-        inputPanel.getChildren().get(4).setOnMouseClicked(e ->
-        {
+        inputPanel.getChildren().get(4).setOnMouseClicked(e -> {
             if ((this.sorter.getSortingThread() == null || this.sorter.getSortingThread().isAlive() == false))
             {
                 outputPanel.updateONotation();
@@ -62,8 +44,7 @@ public class gui extends Application
 		primaryStage.show();
     }
 
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         launch(args);
     }
 }

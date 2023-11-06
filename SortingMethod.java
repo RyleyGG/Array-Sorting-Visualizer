@@ -1,17 +1,11 @@
 import java.lang.Math;
 import java.util.Arrays;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.scene.Scene;
-import java.util.Timer;
-import java.util.TimerTask;
 import javafx.application.Platform;
-import javafx.beans.binding.When;
 
 
-public class SortingMethod
-{
+public class SortingMethod {
     private int step;
     private SortingArray curArray = new SortingArray();
     private Map<Integer, Runnable> sortingMethods = new HashMap<Integer,Runnable>();
@@ -21,8 +15,7 @@ public class SortingMethod
 
 
 
-    public SortingMethod(SortingArray inputArray) //Initializing all sorting methods when the program is first launched
-    {
+    public SortingMethod(SortingArray inputArray) { //Initializing all sorting methods when the program is first launched
         //When the sorter is first initialized, its associated array is set to a blank 'initialization array' as seen here
         //That way, there is essentially no performance hit from the below map being constructed
         //Immediately after this constructor is completed, the initialization array will be replaced with the actual input array used throughout the program
@@ -35,38 +28,31 @@ public class SortingMethod
         this.setCurArray(inputArray);
     }
 
-    public void selectMethod(int selectedMethod, SortingMethod sorter)
-    {
+    public void selectMethod(int selectedMethod, SortingMethod sorter) {
         sorter.sortingMethods.get(selectedMethod).run(); //The dropdown list in the GUI and the sortingMethods list have the same order, thus its possible to use the index of the selected dropdown item to point to the correct sorting method    }
     }
 
-    public double oNotation(int[] inputArray)
-    {
+    public double oNotation(int[] inputArray) {
         return Math.log(this.step)/Math.log(inputArray.length);
     }
 
-    public void bubble(int[] inputArray)
-    {
+    public void bubble(int[] inputArray) {
         this.step = 0;
         int[] newArray = inputArray;
 
 
         
-        this.sortingThread = new Thread(() ->
-        {
+        this.sortingThread = new Thread(() -> {
             int notSortedCheck = 0;
-            while (notSortedCheck != newArray.length)
-            {
+            while (notSortedCheck != newArray.length) {
                 notSortedCheck = 0;
-                for (int i = 0; i < newArray.length; i++)
-                {
+                for (int i = 0; i < newArray.length; i++) {
                     //Needed for the run() methods... seems inefficient, maybe better solution available(?)
                     MainPanel tempMainPanel = this.mainPanel;
                     int index = i;
 
                     //All GUI updates occur within a Platform.runlater() so that the javafx application thread is used (IllegalStateException thrown otherwise)
-                    Platform.runLater(new Runnable()
-                    {
+                    Platform.runLater(new Runnable() {
                         @Override
                         public void run()
                         {
@@ -74,18 +60,15 @@ public class SortingMethod
                         }
                     });
 
-                    try
-                    {
+                    try {
                         Thread.sleep(50);
                     }
-                    catch (InterruptedException e)
-                    {
+                    catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
 
-                    if ((i + 1 < newArray.length) && (newArray[i + 1] < newArray[i]))
-                    {
+                    if ((i + 1 < newArray.length) && (newArray[i + 1] < newArray[i])) {
                         int temp = inputArray[i];
                         newArray[i] = inputArray[i + 1];
                         newArray[i + 1] = temp;
@@ -100,8 +83,7 @@ public class SortingMethod
                             }
                         });
                     }
-                    else
-                    {
+                    else {
                         notSortedCheck++;
                     }   
 
@@ -115,27 +97,22 @@ public class SortingMethod
         this.sortingThread.start();
     }
 
-    public void reverseBubble(int[] inputArray)
-    {
+    public void reverseBubble(int[] inputArray) {
         this.step = 0;
         int[] newArray = inputArray;
 
 
-        this.sortingThread = new Thread(() ->
-        {
+        this.sortingThread = new Thread(() -> {
             int notSortedCheck = 0;
-            while (notSortedCheck != newArray.length)
-            {
+            while (notSortedCheck != newArray.length) {
                 notSortedCheck = 0;
-                for (int i = 0; i < newArray.length; i++)
-                {
+                for (int i = 0; i < newArray.length; i++) {
                     //Needed for the run() methods... seems inefficient, maybe better solution available(?)
                     MainPanel tempMainPanel = this.mainPanel;
                     int index = i;
 
                     //All GUI updates occur within a Platform.runlater() so that the javafx application thread is used (IllegalStateException thrown otherwise)
-                    Platform.runLater(new Runnable()
-                    {
+                    Platform.runLater(new Runnable() {
                         @Override
                         public void run()
                         {
@@ -143,23 +120,19 @@ public class SortingMethod
                         }
                     });
 
-                    try
-                    {
+                    try {
                         Thread.sleep(50);
                     }
-                    catch (InterruptedException e)
-                    {
+                    catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
-                    if ((i + 1 < newArray.length) && (newArray[i + 1] > newArray[i]))
-                    {
+                    if ((i + 1 < newArray.length) && (newArray[i + 1] > newArray[i])) {
                         int temp = inputArray[i];
                         newArray[i] = inputArray[i + 1];
                         newArray[i + 1] = temp;
 
-                        Platform.runLater(new Runnable()
-                        {
+                        Platform.runLater(new Runnable() {
                             @Override
                             public void run()
                             {
@@ -167,8 +140,7 @@ public class SortingMethod
                             }
                         });
                     }
-                    else
-                    {
+                    else {
                         notSortedCheck++;
                     }
 
@@ -209,28 +181,23 @@ public class SortingMethod
 
     /////////////////// Setters and getters ///////////////////
 
-    public void setCurArray(SortingArray curArray)
-    {
+    public void setCurArray(SortingArray curArray) {
         this.curArray = curArray;
     }
 
-    public Thread getSortingThread()
-    {
+    public Thread getSortingThread() {
         return this.sortingThread;
     }
 
-    public void setMainPanel(MainPanel mainPanel)
-    {
+    public void setMainPanel(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
     }
 
-    public void setOutputPanel(OutputPanel outputPanel)
-    {
+    public void setOutputPanel(OutputPanel outputPanel) {
         this.outputPanel = outputPanel;
     }
 
-    public Map<Integer, Runnable> getSortingMethods()
-    {
+    public Map<Integer, Runnable> getSortingMethods() {
         return this.sortingMethods;
     }
 }

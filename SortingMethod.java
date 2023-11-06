@@ -29,7 +29,7 @@ public class SortingMethod
         int[] initializationArray = new int[0];
         this.curArray.setElements(initializationArray);
 
-        this.sortingMethods.put(0,() -> bubble(this.curArray.getElements(),this.mainPanel));
+        this.sortingMethods.put(0,() -> bubble(this.curArray.getElements()));
         this.sortingMethods.put(1,() -> reverseBubble(this.curArray.getElements()));
 
         this.setCurArray(inputArray);

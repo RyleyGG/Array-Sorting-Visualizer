@@ -2,7 +2,6 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.stage.Stage;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.SyntaxException;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;

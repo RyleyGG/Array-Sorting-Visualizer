@@ -12,29 +12,32 @@ public class gui extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // init
         BorderPane rootPane = new BorderPane();
         Scene scene = new Scene(rootPane,720,480);
 
-        InputPanel inputPanel = new InputPanel(scene,this.inputArray,this.sorter);
-        MainPanel mainPanel = new MainPanel(scene,this.inputArray);
+        // constructing primary view
+        MainPanel mainPanel = new MainPanel(scene, this.inputArray);
+        InputPanel inputPanel = new InputPanel(scene, this.inputArray, this.sorter);
+        OutputPanel outputPanel = new OutputPanel(scene, this.sorter);
         this.sorter.setMainPanel(mainPanel);
-        OutputPanel outputPanel = new OutputPanel(scene,this.sorter);
         this.sorter.setOutputPanel(outputPanel);
         rootPane.setTop(inputPanel);
         rootPane.setCenter(mainPanel);
         rootPane.setBottom(outputPanel);
         rootPane.setRight(new Pane());
 
+        // if generate button is selected
         inputPanel.getChildren().get(2).setOnMouseClicked(e -> {
             if ((this.sorter.getSortingThread() == null || this.sorter.getSortingThread().isAlive() == false)) {
                 outputPanel.updateONotation();
-                mainPanel.generateGraph(scene,inputArray);
+                mainPanel.generateGraph(scene, inputArray);
             }
         });
 
+        // if sort button is selected
         inputPanel.getChildren().get(4).setOnMouseClicked(e -> {
-            if ((this.sorter.getSortingThread() == null || this.sorter.getSortingThread().isAlive() == false))
-            {
+            if ((this.sorter.getSortingThread() == null || this.sorter.getSortingThread().isAlive() == false)) {
                 outputPanel.updateONotation();
             }
         });

@@ -8,7 +8,11 @@ import javafx.application.Platform;
 public class SortingMethod {
     private int step;
     private SortingArray curArray = new SortingArray();
-    private Map<Integer, Runnable> sortingMethods = new HashMap<Integer,Runnable>();
+    private Map<Integer, Runnable> sortingMethodRunnables = new HashMap<Integer,Runnable>();
+    private String[] sortingMethodNames = {
+        "Bubble Sort",
+        "Reverse Bubble Sort"
+    };
     private MainPanel mainPanel;
     private OutputPanel outputPanel;
     private Thread sortingThread; //Used so thread.sleep() later on doesn't freeze main program thread
@@ -22,14 +26,18 @@ public class SortingMethod {
         int[] initializationArray = new int[0];
         this.curArray.setElements(initializationArray);
 
-        this.sortingMethods.put(0,() -> bubble(this.curArray.getElements()));
-        this.sortingMethods.put(1,() -> reverseBubble(this.curArray.getElements()));
+        this.sortingMethodRunnables.put(0,() -> bubble(this.curArray.getElements()));
+        this.sortingMethodRunnables.put(1,() -> reverseBubble(this.curArray.getElements()));
 
         this.setCurArray(inputArray);
     }
 
-    public void selectMethod(int selectedMethod, SortingMethod sorter) {
-        sorter.sortingMethods.get(selectedMethod).run(); //The dropdown list in the GUI and the sortingMethods list have the same order, thus its possible to use the index of the selected dropdown item to point to the correct sorting method    }
+    public void executeMethod(int selectedMethod, SortingMethod sorter) {
+         /*
+            The dropdown list in the GUI and the sortingMethods list have the same order,
+            thus its possible to use the index of the selected dropdown item to point to the correct sorting method
+         */
+        sorter.sortingMethodRunnables.get(selectedMethod).run();
     }
 
     public double oNotation(int[] inputArray) {
@@ -197,8 +205,12 @@ public class SortingMethod {
         this.outputPanel = outputPanel;
     }
 
-    public Map<Integer, Runnable> getSortingMethods() {
-        return this.sortingMethods;
+    public Map<Integer, Runnable> getSortingMethodRunnables() {
+        return this.sortingMethodRunnables;
+    }
+
+    public String[] getSortingMethodNames() {
+        return this.sortingMethodNames;
     }
 }
 

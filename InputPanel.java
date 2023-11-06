@@ -12,12 +12,13 @@ public class InputPanel extends HBox {
         this.setMaxHeight(Double.MAX_VALUE);
 
         Text arraySizeText = new Text();
-        arraySizeText.setText("Array Size (1500 maximum):");
+        arraySizeText.setText("Array Size:");
         TextField arraySizeInput = new TextField();
         Button generateButton = new Button("Generate");
         generateButton.setOnAction(e -> {
             try {
-                if (Integer.parseInt(arraySizeInput.getText()) <= 1500 && (sorter.getSortingThread() == null || sorter.getSortingThread().isAlive() == false)) {
+                // if not currently sorting, generate new random list
+                if (sorter.getSortingThread() == null || sorter.getSortingThread().isAlive() == false) {
                     inputArray.setElementCount(Integer.parseInt(arraySizeInput.getText()));
                     inputArray.generateValues();
                 }
@@ -26,20 +27,18 @@ public class InputPanel extends HBox {
             }
         });
 
-        String[] methodList =  new String[2];
-        methodList[0] = "Bubble Sort";
-        methodList[1] = "Reverse Bubble Sort";
+        String[] methodList =  sorter.getSortingMethodNames();
 
-        ComboBox<String> sortingOptions = new ComboBox<String>(FXCollections.observableArrayList(methodList));
+        ComboBox<String> sortingOptions = new ComboBox<String>(FXCollections.observableArrayList(sorter.getSortingMethodNames()));
         Button sortButton = new Button("Sort");
         sortButton.setOnAction(e -> {
             for (int i = 0; i < methodList.length; i++) {
                 if (sortingOptions.getValue() == methodList[i] && (sorter.getSortingThread() == null || sorter.getSortingThread().isAlive() == false)) {
-                    sorter.selectMethod(i, sorter);
+                    sorter.executeMethod(i, sorter);
                 }
             }
         });
 
-        this.getChildren().addAll(arraySizeText,arraySizeInput,generateButton,sortingOptions,sortButton);
+        this.getChildren().addAll(arraySizeText, arraySizeInput, generateButton, sortingOptions, sortButton);
     }
 }

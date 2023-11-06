@@ -11,28 +11,20 @@ public class MainPanel extends HBox {
     Scene scene;
 
     public MainPanel(Scene scene, SortingArray inputArray) {
+        // init
         this.scene = scene;
         this.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
         this.setStyle("-fx-border-color: black;\n" +
         "-fx-border-width: 1;\n");
         this.setAlignment(Pos.BOTTOM_LEFT);
-        /*
-        //Outline rectangle
-        Rectangle outlineRect = new Rectangle();
-        outlineRect.widthProperty().bind(scene.widthProperty());
-        outlineRect.heightProperty().bind(scene.heightProperty().subtract(scene.getHeight()*0.25));
-        outlineRect.setFill(Color.TRANSPARENT);
-        outlineRect.setStroke(Color.BLACK);
-
-        this.getChildren().add(outlineRect);
-        */
     }
 
     public void generateGraph(Scene scene, SortingArray inputArray) {
+        // remove all prev rects and init new arr
         this.graphRectArr = new Rectangle[inputArray.getElementCount()];
         this.getChildren().remove(0,this.getChildren().size());
 
-        //Setting up the largest array number for bar graph creation
+        // bar sizing is relative based on the largest value randomly generated.
         for (int i = 0; i < inputArray.getElementCount();i++)
         {
             if (inputArray.getElements()[i] > this.largestArrNum)
@@ -41,35 +33,30 @@ public class MainPanel extends HBox {
             }
         }
 
-        //Creating the rectangles for the bar graph
+        // creating the rectangles for the bar graph
         for (int i = 0; i < inputArray.getElementCount(); i++) {
             int curValue = inputArray.getElements()[i];
-            int largestNumTemp = this.largestArrNum;
             Rectangle rect = new Rectangle();
+
+            // applying rect width
             rect.widthProperty().bind(Bindings.createDoubleBinding(
-                () -> ((scene.widthProperty().getValue()-scene.widthProperty().getValue()*0.2)/inputArray.getElementCount()),scene.widthProperty()));
-            //System.out.println(rect.widthProperty());
-            
+                () -> ((scene.widthProperty().getValue()-scene.widthProperty().getValue()*0.2)/inputArray.getElementCount()), scene.widthProperty()));
+
+            // applying rect height. Height is relative such that largest number is 80% of the maximum height in the current scene
             rect.heightProperty().bind(Bindings.createDoubleBinding(
-                () -> (scene.heightProperty().getValue()*0.8)*((double) curValue/(double) largestNumTemp),scene.heightProperty()));
+                () -> (scene.heightProperty().getValue()*0.8)*((double) curValue/(double) this.largestArrNum), scene.heightProperty()));
             rect.setStroke(Color.BLACK);
             rect.setFill(Color.web("#008BFF"));
             this.graphRectArr[i] = rect;
         }
 
-        //Adding rectangles to pane & setting action
+        //Adding rectangles to pane
         for (int i = 0; i < this.graphRectArr.length; i++) {
             this.getChildren().add(this.graphRectArr[i]);
-            /*
-            int indexTemp = i;
-            this.getChildren().get(i).setOnMouseEntered(e ->
-            {
-                System.out.println(indexTemp+1);
-            });
-            */
         }
     }
 
+    // for a given rect index, flip its color (assume binary choice between green and blue)
     public void updateGraphColor(int... selectedBarIndex) {
         for (int i = 0; i < selectedBarIndex.length; i++) {
             try {
@@ -115,13 +102,6 @@ public class MainPanel extends HBox {
                 //Adding rectangles to pane & setting action
                 for (int x = startIndex; x < endIndex+1; x++) {
                     this.getChildren().set(x,this.graphRectArr[x]);
-                    /*
-                    int indexTemp = x;
-                    this.getChildren().get(x).setOnMouseEntered(e ->
-                    {
-                        System.out.println(indexTemp+1);
-                    });
-                    */
                 }
             }
         }
